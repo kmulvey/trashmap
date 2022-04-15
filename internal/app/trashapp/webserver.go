@@ -1,4 +1,4 @@
-package main
+package trashapp
 
 import (
 	"log"
@@ -9,15 +9,13 @@ import (
 
 func startWebServer(addr string, runLocal bool) {
 	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
+	r.PUT("/user", CreateUser)
+	r.DELETE("/user", DeleteUser)
+	r.POST("/user", UpdateUser)
 
 	if runLocal {
 		r.Run(addr)
 	} else {
-		log.Fatal(autotls.Run(r, "example1.com", "example2.com")) // TODO: real hostname .. #1
+		log.Fatal(autotls.Run(r, "example1.com", "example2.com")) // TODO: real hostname .. https://github.com/kmulvey/trashmap/issues/1
 	}
 }
