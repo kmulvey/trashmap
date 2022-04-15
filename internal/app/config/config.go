@@ -1,4 +1,4 @@
-package trashapp
+package config
 
 import "database/sql"
 

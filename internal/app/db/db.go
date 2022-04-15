@@ -1,4 +1,4 @@
-package trashapp
+package db
 
 import (
 	"database/sql"
@@ -21,10 +21,4 @@ func DBConnect(host, user, password, dbName string, port int) (*sql.DB, error) {
 	err = db.Ping()
 
 	return db, err
-}
-
-func InsertUser(db *sql.DB, email string, contactAllowed bool) error {
-	updateStmt := `INSERT INTO auth(email, contact_allowed) VALUES($1, $2)`
-	var _, err = db.Exec(updateStmt, email, contactAllowed)
-	return err
 }

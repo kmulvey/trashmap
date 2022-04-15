@@ -1,5 +1,7 @@
 package auth
 
-func Login(config *Config, email string) (uuid, error) {
+import "github.com/kmulvey/trashmap/internal/app/config"
+
+func Login(config *config.Config, email string) (string, error) {
 
 }
