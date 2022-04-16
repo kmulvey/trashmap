@@ -5,11 +5,12 @@ import (
 
 	"github.com/gin-gonic/autotls"
 	"github.com/gin-gonic/gin"
+	"github.com/kmulvey/trashmap/internal/app/config"
 )
 
-func startWebServer(addr string, runLocal bool) {
+func startWebServer(config *config.Config, runLocal bool) {
 	r := gin.Default()
-	r.PUT("/user", CreateUser)
+	r.PUT("/user", func(c *gin.Context) { CreateUser(config, c) })
 	r.DELETE("/user", DeleteUser)
 	r.POST("/user", UpdateUser)
 
