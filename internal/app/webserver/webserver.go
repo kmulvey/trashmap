@@ -1,4 +1,4 @@
-package trashapp
+package webserver
 
 import (
 	"github.com/gin-gonic/autotls"
@@ -7,7 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func startWebServer(config *config.Config, runLocal bool) {
+func StartWebServer(config *config.Config, runLocal bool) {
 	r := gin.Default()
 	r.PUT("/user", func(c *gin.Context) { CreateUser(config, c) })
 	r.DELETE("/user", func(c *gin.Context) { DeleteUser(config, c) })

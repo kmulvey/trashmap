@@ -1,4 +1,4 @@
-package trashapp
+package webserver
 
 import (
 	"net/http"
