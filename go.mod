@@ -3,6 +3,10 @@ module github.com/kmulvey/trashmap
 go 1.17
 
 require (
+	github.com/gin-contrib/cors v1.3.1
+	github.com/gin-contrib/gzip v0.0.5
+	github.com/gin-contrib/httpsign v0.0.1
+	github.com/gin-contrib/secure v0.0.1
 	github.com/gin-gonic/autotls v0.0.3
 	github.com/gin-gonic/gin v1.7.7
 	github.com/google/uuid v1.3.0
