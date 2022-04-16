@@ -1,4 +1,4 @@
-package trashapp
+package users
 
 import (
 	"fmt"
@@ -13,4 +13,8 @@ func AddUser(config *config.Config, email string, contactAllowed bool) error {
 		return db.InsertUser(config.DBConn, email, contactAllowed)
 	}
 	return fmt.Errorf("%-30s is not a valid email", email)
+}
+
+func RemoveUser(config *config.Config, email string) error {
+	return db.DeleteUser(config.DBConn, email)
 }

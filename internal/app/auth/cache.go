@@ -15,9 +15,11 @@ type Cache struct {
 	Lock     sync.RWMutex
 }
 
-func NewCache() *Cache {
+func NewCache(config *config.Config) *Cache {
 	var c = new(Cache)
 	c.Sessions = make(map[string]bool)
+
+	go c.updateCache(config)
 	return c
 }
 
@@ -33,22 +35,18 @@ func (c *Cache) updateCache(config *config.Config) {
 
 	var ticker = time.NewTicker(time.Minute * 10)
 
-	for {
-		select {
-		case <-ticker.C:
-			var uuids, _ = db.GetSessions(config.DBConn)
-			// TODO what to do with this error?
+	for range ticker.C {
+		var uuids, _ = db.GetSessions(config.DBConn)
+		// TODO what to do with this error?
 
-			c.Lock.Lock()
+		c.Lock.Lock()
 
-			c.Sessions = make(map[string]bool)
+		c.Sessions = make(map[string]bool)
 
-			for _, uuid := range uuids {
-				c.Sessions[uuid] = staticBool
-			}
-
-			c.Lock.Unlock()
+		for _, uuid := range uuids {
+			c.Sessions[uuid] = staticBool
 		}
 
+		c.Lock.Unlock()
 	}
 }

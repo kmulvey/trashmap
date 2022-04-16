@@ -15,29 +15,41 @@ func CreateUser(config *config.Config, c *gin.Context) {
 	var contactAllowed, err = strconv.ParseBool(contactAllowedStr)
 	if err != nil {
 		c.JSON(
-			http.StatusOK,
+			http.StatusBadRequest,
 			gin.H{
-				"code":      http.StatusBadRequest,
 				"error":     "unable to ParseBool: " + contactAllowedStr,
 				"raw_error": err.Error(),
 			},
 		)
+		return
 	}
+
 	err = users.AddUser(config, email, contactAllowed)
 	if err != nil {
 		c.JSON(
-			http.StatusOK,
+			http.StatusInternalServerError,
 			gin.H{
-				"code":      http.StatusInternalServerError,
 				"error":     "unable to add user",
 				"raw_error": err.Error(),
 			},
 		)
+		return
 	}
+	c.Status(http.StatusOK)
 }
-func UpdateUser(*gin.Context) {
 
-}
-func DeleteUser(*gin.Context) {
-
+func DeleteUser(config *config.Config, c *gin.Context) {
+	var email = c.PostForm("email")
+	var err = users.RemoveUser(config, email)
+	if err != nil {
+		c.JSON(
+			http.StatusInternalServerError,
+			gin.H{
+				"error":     "unable to remove user",
+				"raw_error": err.Error(),
+			},
+		)
+		return
+	}
+	c.Status(http.StatusOK)
 }

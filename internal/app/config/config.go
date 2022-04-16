@@ -9,4 +9,6 @@ type Config struct {
 	DBHostname string
 	DBPort     int
 	DBConn     *sql.DB
+
+	HTTPAddr string
 }

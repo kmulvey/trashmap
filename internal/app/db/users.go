@@ -14,6 +14,12 @@ func InsertUser(db *sql.DB, email string, contactAllowed bool) error {
 	return err
 }
 
+func DeleteUser(db *sql.DB, email string) error {
+	updateStmt := `DELETE FROM users where email="$1"`
+	var _, err = db.Exec(updateStmt, email)
+	return err
+}
+
 func Login(db *sql.DB, id int, uuid string) error {
 	updateStmt := `INSERT INTO auth(auth_token, user_id) VALUES($1, $2)`
 	var _, err = db.Exec(updateStmt, uuid, id)

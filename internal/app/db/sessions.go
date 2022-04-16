@@ -16,7 +16,10 @@ func GetSessions(db *sql.DB) ([]string, error) {
 	var sessions []string
 	for rows.Next() {
 		var uuid string
-		rows.Scan(&uuid)
+		err = rows.Scan(&uuid)
+		if err != nil {
+			return nil, err
+		}
 		sessions = append(sessions, uuid)
 	}
 
