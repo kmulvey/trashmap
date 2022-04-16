@@ -14,7 +14,9 @@ type Config struct {
 	DBPort     int
 	DBConn     *sql.DB
 
-	HTTPAddr string
+	HTTPAddr               string
+	HTTPReadSigningSecret  string
+	HTTPWriteSigningSecret string
 }
 
 func NewConfig(DBUsername, DBPassword, DBName, DBHostname, HTTPAddr string, DBPort int) (*Config, error) {
