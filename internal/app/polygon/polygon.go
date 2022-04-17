@@ -24,7 +24,7 @@ func GetPolygonsWithinArea(config *config.Config, polygonStr string) error {
 		}
 	}
 
-	return db.InsertArea(config.DBConn, userID, polygonStr)
+	return db.GetPolygonsWithinArea(config.DBConn, polygonStr)
 }
 func SavePolygon(config *config.Config, userID int, polygonStr string) error {
 	var polygonArr = strings.Split(polygonStr, ",")
