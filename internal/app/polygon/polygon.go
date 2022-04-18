@@ -7,25 +7,47 @@ import (
 
 	"github.com/kmulvey/trashmap/internal/app/config"
 	"github.com/kmulvey/trashmap/internal/app/db"
+	"github.com/kmulvey/trashmap/internal/pkg/gps"
 )
 
-func GetPolygonsWithinArea(config *config.Config, polygonStr string) error {
+func GetPolygonsWithinArea(config *config.Config, polygonStr string) ([]*gps.Coordinate, error) {
 	var polygonArr = strings.Split(polygonStr, ",")
 
 	// first check that we got enough data
 	if len(polygonArr) == 8 {
-		return errors.New("gps points are malformed (lenght must be 8)")
+		return nil, errors.New("gps points are malformed (lenght must be 8)")
 	}
 
 	// chech that the things in between the commas are actually floats
 	for _, point := range polygonArr {
 		if _, err := strconv.ParseFloat(point, 64); err != nil {
-			return err
+			return nil, err
 		}
 	}
 
-	return db.GetPolygonsWithinArea(config.DBConn, polygonStr)
+	// get polys from db
+	var coordinateStrArr, err = db.GetPolygonsWithinArea(config.DBConn, polygonStr)
+	if err != nil {
+		return nil, err
+	}
+
+	// change the strings into *gps.Coordinate
+	var coordinates = make([]*gps.Coordinate, len(coordinateStrArr))
+	for i, coordinate := range coordinateStrArr {
+		var split = strings.Split(coordinate, " ")
+		if len(split) != 2 {
+			return nil, errors.New("unable to marshal coordinates from db")
+		}
+
+		coordinates[i], err = gps.NewCoordinateFromString(coordinate)
+		if len(split) != 2 {
+			return nil, err
+		}
+	}
+
+	return coordinates, nil
 }
+
 func SavePolygon(config *config.Config, userID int, polygonStr string) error {
 	var polygonArr = strings.Split(polygonStr, ",")
 
