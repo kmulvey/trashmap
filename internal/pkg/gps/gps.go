@@ -8,8 +8,8 @@ import (
 )
 
 type Coordinate struct {
-	Lat  float64
-	Long float64
+	Lat  float64 `json:"lat"`
+	Long float64 `json:"long"`
 }
 
 func NewCoordinateFromPostGISString(coordinateStr string) (*Coordinate, error) {
