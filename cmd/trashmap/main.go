@@ -23,5 +23,5 @@ func main() {
 		log.Fatal(err)
 	}
 
-	webserver.StartWebServer(config, runLocal)
+	log.Fatal(webserver.StartWebServer(config, runLocal))
 }

@@ -14,7 +14,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func StartWebServer(config *config.Config, runLocal bool) {
+func StartWebServer(config *config.Config, runLocal bool) error {
 	var router = gin.Default()
 
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
@@ -62,7 +62,7 @@ func StartWebServer(config *config.Config, runLocal bool) {
 	// session
 	store, err := postgres.NewStore(config.DBConn, []byte("secret"))
 	if err != nil {
-		// handle err
+		return err
 	}
 
 	router.Use(sessions.Sessions("web-session", store))
@@ -79,4 +79,6 @@ func StartWebServer(config *config.Config, runLocal bool) {
 	} else {
 		log.Fatal(autotls.Run(router, config.HTTPAddr))
 	}
+
+	return nil
 }
