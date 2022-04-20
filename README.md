@@ -6,6 +6,7 @@
 cd deployments/local/
 docker-compose up
 ```
+pgAdmin will come up on http://localhost:8080/browser/
 
 ## HTTP routes
 | Path       | Method  | Args                                                       | Description |
