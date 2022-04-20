@@ -40,3 +40,7 @@ func NewConfig(DBUsername, DBPassword, DBName, DBHostname string, DBPort int, HT
 
 	return &c, err
 }
+
+func NewTestConfig() (*Config, error) {
+	return NewConfig("postgres", "postgres", "postgres", "localhost", 5432, "http://localhost", "salt", "salt", "salt")
+}
