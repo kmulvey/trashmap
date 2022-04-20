@@ -1,5 +1,4 @@
 DROP TABLE IF EXISTS areas;
-DROP TABLE IF EXISTS auth;
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
@@ -7,13 +6,6 @@ CREATE TABLE users (
     email VARCHAR(128) NOT NULL,
     contact_allowed boolean DEFAULT false
 );
-
-CREATE TABLE auth (
-    user_id SERIAL,
-    created timestamp NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-CREATE INDEX auth_user_idx ON auth (user_id, created);
 
 CREATE TABLE areas (
     id SERIAL PRIMARY KEY,
