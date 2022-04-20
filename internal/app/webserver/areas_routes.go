@@ -5,8 +5,8 @@ import (
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/kmulvey/trashmap/internal/app/areas"
 	"github.com/kmulvey/trashmap/internal/app/config"
-	"github.com/kmulvey/trashmap/internal/app/polygon"
 )
 
 // CreatePickupArea handler takes a POST'd gps string and
@@ -27,7 +27,7 @@ func CreatePickupArea(config *config.Config, c *gin.Context) {
 		return
 	}
 
-	var err = polygon.SaveArea(config, userID, polygonStr)
+	var id, err = areas.SaveArea(config, userID, polygonStr)
 	if err != nil {
 		c.JSON(
 			http.StatusInternalServerError,
@@ -38,5 +38,10 @@ func CreatePickupArea(config *config.Config, c *gin.Context) {
 		)
 		return
 	}
-	c.Status(http.StatusOK)
+	c.JSON(
+		http.StatusOK,
+		gin.H{
+			"id": id,
+		},
+	)
 }

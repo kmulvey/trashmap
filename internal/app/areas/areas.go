@@ -1,4 +1,4 @@
-package polygon
+package areas
 
 import (
 	"errors"
@@ -52,18 +52,18 @@ func GetPickupAreasWithinArea(config *config.Config, polygonStr string) ([]*gps.
 
 // SaveArea adds the user's pickup area to the areas table.
 // Currently we do not check if this new area overlaps any others.
-func SaveArea(config *config.Config, userID int, polygonStr string) error {
+func SaveArea(config *config.Config, userID int, polygonStr string) (int64, error) {
 	var polygonArr = strings.Split(polygonStr, ",")
 
 	// first check that we got enough data
 	if len(polygonArr)%2 != 0 {
-		return errors.New("gps points are malformed (lenght is odd, should be even given they are pairs")
+		return -1, errors.New("gps points are malformed (lenght is odd, should be even given they are pairs")
 	}
 
 	// chech that the things in between the commas are actually floats
 	for _, point := range polygonArr {
 		if _, err := strconv.ParseFloat(point, 64); err != nil {
-			return err
+			return -1, err
 		}
 	}
 

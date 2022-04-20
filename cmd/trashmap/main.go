@@ -18,7 +18,7 @@ func main() {
 	flag.BoolVar(&runLocal, "run-local", false, "run the webserver locally (no https)")
 	flag.Parse()
 
-	var config, err = config.NewConfig("", "", "", "", "", 0)
+	var config, err = config.NewConfig("", "", "", "", 0, "", "")
 	if err != nil {
 		log.Fatal(err)
 	}

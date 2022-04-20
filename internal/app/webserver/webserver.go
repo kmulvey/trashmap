@@ -71,7 +71,7 @@ func StartWebServer(config *config.Config, runLocal bool) {
 	router.POST("/login", func(c *gin.Context) { Login(config, c) })
 	router.PUT("/user", func(c *gin.Context) { CreateUser(config, c) })
 	router.DELETE("/user", func(c *gin.Context) { DeleteUser(config, c) })
-	router.PUT("/polygon", func(c *gin.Context) { CreatePolygon(config, c) })
+	router.PUT("/polygon", func(c *gin.Context) { CreatePickupArea(config, c) })
 
 	if runLocal {
 		log.Fatal(router.Run(config.HTTPAddr))
