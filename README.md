@@ -1,6 +1,12 @@
 # Trash Map
 [![TrashMap](https://github.com/kmulvey/trashmap/actions/workflows/release_build.yml/badge.svg)](https://github.com/kmulvey/trashmap/actions/workflows/release_build.yml) [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://vshymanskyy.github.io/StandWithUkraine)
 
+## Run Locally
+```
+cd deployments/local/
+docker-compose up
+```
+
 ## HTTP routes
 | Path       | Method  | Args                                                       | Description |
 |------------|---------|------------------------------------------------------------|--------------
