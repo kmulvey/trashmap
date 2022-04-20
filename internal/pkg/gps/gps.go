@@ -12,7 +12,7 @@ type Coordinate struct {
 	Long float64
 }
 
-func NewCoordinateFromString(coordinateStr string) (*Coordinate, error) {
+func NewCoordinateFromPostGISString(coordinateStr string) (*Coordinate, error) {
 	var coordinate = new(Coordinate)
 	var err error
 
@@ -32,4 +32,9 @@ func NewCoordinateFromString(coordinateStr string) (*Coordinate, error) {
 	}
 
 	return coordinate, nil
+}
+
+// ToPostGISString prints the Coordinate space separated for postgis
+func (c *Coordinate) ToPostGISString() string {
+	return fmt.Sprintf("%f %f", c.Lat, c.Long)
 }
