@@ -10,7 +10,9 @@ import (
 	"github.com/kmulvey/trashmap/internal/pkg/gps"
 )
 
-func GetPolygonsWithinArea(config *config.Config, polygonStr string) ([]*gps.Coordinate, error) {
+// GetPickupAreasWithinArea takes an area as a set of GPS points and
+// returns all the trash pickup areas within it in the gps.Coordinate format.
+func GetPickupAreasWithinArea(config *config.Config, polygonStr string) ([]*gps.Coordinate, error) {
 	var polygonArr = strings.Split(polygonStr, ",")
 
 	// first check that we got enough data
@@ -26,7 +28,7 @@ func GetPolygonsWithinArea(config *config.Config, polygonStr string) ([]*gps.Coo
 	}
 
 	// get polys from db
-	var coordinateStrArr, err = db.GetPolygonsWithinArea(config.DBConn, polygonStr)
+	var coordinateStrArr, err = db.GetPickupAreasWithinArea(config.DBConn, polygonStr)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +50,9 @@ func GetPolygonsWithinArea(config *config.Config, polygonStr string) ([]*gps.Coo
 	return coordinates, nil
 }
 
-func SavePolygon(config *config.Config, userID int, polygonStr string) error {
+// SaveArea adds the user's pickup area to the areas table.
+// Currently we do not check if this new area overlaps any others.
+func SaveArea(config *config.Config, userID int, polygonStr string) error {
 	var polygonArr = strings.Split(polygonStr, ",")
 
 	// first check that we got enough data

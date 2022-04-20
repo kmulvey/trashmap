@@ -9,7 +9,9 @@ import (
 	"github.com/kmulvey/trashmap/internal/app/polygon"
 )
 
-func CreatePolygon(config *config.Config, c *gin.Context) {
+// CreatePickupArea handler takes a POST'd gps string and
+// adds it to the database.
+func CreatePickupArea(config *config.Config, c *gin.Context) {
 	var polygonStr = c.PostForm("polygon")
 	var session = sessions.Default(c)
 	var userIDIFace = session.Get("user_id")
@@ -25,7 +27,7 @@ func CreatePolygon(config *config.Config, c *gin.Context) {
 		return
 	}
 
-	var err = polygon.SavePolygon(config, userID, polygonStr)
+	var err = polygon.SaveArea(config, userID, polygonStr)
 	if err != nil {
 		c.JSON(
 			http.StatusInternalServerError,
