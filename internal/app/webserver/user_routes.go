@@ -41,7 +41,7 @@ func Login(config *config.Config, c *gin.Context) {
 func CreateUser(config *config.Config, c *gin.Context) {
 	var email = c.PostForm("email")
 	var password = c.PostForm("password")
-	var contactAllowedStr = c.PostForm("contactAllowed")
+	var contactAllowedStr = c.PostForm("contact_allowed")
 	var contactAllowed, err = strconv.ParseBool(contactAllowedStr)
 	if err != nil {
 		c.JSON(
@@ -73,7 +73,7 @@ func CreateUser(config *config.Config, c *gin.Context) {
 }
 
 func DeleteUser(config *config.Config, c *gin.Context) {
-	var email = c.PostForm("email")
+	var email = c.Param("email")
 	var err = users.Remove(config, email)
 	if err != nil {
 		c.JSON(
