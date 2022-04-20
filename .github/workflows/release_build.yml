@@ -28,7 +28,7 @@ jobs:
       
       - name: Build & Test
         run: |
-          go mod tidy
+          go mod tidy -compat=1.17
           go test -v -race -count 1 ./...
           go build -v -ldflags="-s -w" ./...
 
