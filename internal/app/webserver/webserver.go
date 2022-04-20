@@ -6,6 +6,8 @@ import (
 	"github.com/gin-contrib/httpsign"
 	"github.com/gin-contrib/httpsign/crypto"
 	"github.com/gin-contrib/secure"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/postgres"
 	"github.com/gin-gonic/autotls"
 	"github.com/gin-gonic/gin"
 	"github.com/kmulvey/trashmap/internal/app/config"
@@ -18,19 +20,15 @@ func StartWebServer(config *config.Config, runLocal bool) {
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	router.Use(gin.Recovery())
 
-	// CORS
-	if runLocal {
-		router.Use(cors.Default())
-	} else {
-		var corsConfig = cors.DefaultConfig()
-		corsConfig.AllowOrigins = []string{config.HTTPAddr}
-		router.Use(cors.New(corsConfig))
-	}
-
 	// compress
 	router.Use(gzip.Gzip(gzip.DefaultCompression))
 
-	// secure things a bit
+	// CORS
+	var corsConfig = cors.DefaultConfig()
+	corsConfig.AllowOrigins = []string{config.HTTPAddr}
+	router.Use(cors.New(corsConfig))
+
+	// secure headers
 	router.Use(secure.New(secure.Config{
 		AllowedHosts:          []string{config.HTTPAddr},
 		SSLRedirect:           true,
@@ -61,9 +59,19 @@ func StartWebServer(config *config.Config, runLocal bool) {
 	auth := httpsign.NewAuthenticator(secrets)
 	router.Use(auth.Authenticated())
 
+	// session
+	store, err := postgres.NewStore(config.DBConn, []byte("secret"))
+	if err != nil {
+		// handle err
+	}
+
+	router.Use(sessions.Sessions("web-session", store))
+
 	// routes
+	router.POST("/login", func(c *gin.Context) { Login(config, c) })
 	router.PUT("/user", func(c *gin.Context) { CreateUser(config, c) })
 	router.DELETE("/user", func(c *gin.Context) { DeleteUser(config, c) })
+	router.PUT("/polygon", func(c *gin.Context) { CreatePolygon(config, c) })
 
 	if runLocal {
 		log.Fatal(router.Run(config.HTTPAddr))

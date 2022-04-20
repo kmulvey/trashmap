@@ -3,6 +3,7 @@ package webserver
 import (
 	"net/http"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/kmulvey/trashmap/internal/app/config"
 	"github.com/kmulvey/trashmap/internal/app/polygon"
@@ -10,8 +11,21 @@ import (
 
 func CreatePolygon(config *config.Config, c *gin.Context) {
 	var polygonStr = c.PostForm("polygon")
+	var session = sessions.Default(c)
+	var userIDIFace = session.Get("user_id")
+	var userID, ok = userIDIFace.(int)
+	if !ok {
+		c.JSON(
+			http.StatusInternalServerError,
+			gin.H{
+				"error":     "unable to user get user_id from session",
+				"raw_error": "",
+			},
+		)
+		return
+	}
 
-	var err = polygon.SavePolygon(config, 0, polygonStr)
+	var err = polygon.SavePolygon(config, userID, polygonStr)
 	if err != nil {
 		c.JSON(
 			http.StatusInternalServerError,

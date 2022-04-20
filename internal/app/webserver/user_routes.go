@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/kmulvey/trashmap/internal/app/config"
 	"github.com/kmulvey/trashmap/internal/app/users"
@@ -24,6 +25,10 @@ func Login(config *config.Config, c *gin.Context) {
 		)
 		return
 	}
+
+	// success
+	var session = sessions.Default(c)
+	session.Set("user_id", id)
 	c.JSON(
 		http.StatusOK,
 		gin.H{
@@ -49,7 +54,7 @@ func CreateUser(config *config.Config, c *gin.Context) {
 		return
 	}
 
-	err = users.Add(config, email, password, contactAllowed)
+	userID, err := users.Add(config, email, password, contactAllowed)
 	if err != nil {
 		c.JSON(
 			http.StatusInternalServerError,
@@ -60,6 +65,10 @@ func CreateUser(config *config.Config, c *gin.Context) {
 		)
 		return
 	}
+
+	var session = sessions.Default(c)
+	session.Set("user_id", userID)
+
 	c.Status(http.StatusOK)
 }
 
@@ -76,5 +85,10 @@ func DeleteUser(config *config.Config, c *gin.Context) {
 		)
 		return
 	}
+
+	// delete their session
+	var session = sessions.Default(c)
+	session.Delete(session.Get("user_id"))
+
 	c.Status(http.StatusOK)
 }
