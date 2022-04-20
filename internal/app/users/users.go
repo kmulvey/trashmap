@@ -33,17 +33,22 @@ func Login(config *config.Config, email, password string) (int, bool, error) {
 
 }
 
-func Add(config *config.Config, email, password string, contactAllowed bool) error {
+func Add(config *config.Config, email, password string, contactAllowed bool) (int, error) {
 	if _, err := mail.ParseAddress(email); err != nil {
 
 		hash, err := scrypt.Key([]byte(password), []byte(config.PasswordSalt), 1<<15, 8, 1, 32)
 		if err != nil {
-			return fmt.Errorf("unable to hash password: %w", err)
+			return -1, fmt.Errorf("unable to hash password: %w", err)
 		}
 
-		return db.InsertUser(config.DBConn, email, string(hash), contactAllowed)
+		err = db.InsertUser(config.DBConn, email, string(hash), contactAllowed)
+		if err != nil {
+			return -1, fmt.Errorf("unable to insert user to db: %w", err)
+		}
+
+		return db.GetUserIDByEmail(config.DBConn, email)
 	}
-	return fmt.Errorf("%-30s is not a valid email", email)
+	return -1, fmt.Errorf("%-30s is not a valid email", email)
 }
 
 func Remove(config *config.Config, email string) error {
