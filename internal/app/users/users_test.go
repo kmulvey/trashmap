@@ -7,19 +7,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestFlow(t *testing.T) {
+func TestUserFlow(t *testing.T) {
 	var config, err = config.NewTestConfig()
 	assert.NoError(t, err)
 
-	addUserID, err := Add(config, "testflow@site.com", "password", true)
+	addUserID, err := Add(config, "testuserflow@site.com", "password", true)
 	assert.NoError(t, err)
 	assert.True(t, addUserID > 0)
 
-	loginUserID, contact, err := Login(config, "testflow@site.com", "password")
+	loginUserID, contact, err := Login(config, "testuserflow@site.com", "password")
 	assert.NoError(t, err)
 	assert.Equal(t, addUserID, loginUserID)
 	assert.True(t, contact)
 
-	err = Remove(config, "testflow@site.com")
+	err = Remove(config, "testuserflow@site.com")
 	assert.NoError(t, err)
 }

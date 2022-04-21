@@ -1,9 +1,7 @@
 package areas
 
 import (
-	"errors"
-	"strconv"
-	"strings"
+	"fmt"
 
 	"github.com/kmulvey/trashmap/internal/app/config"
 	"github.com/kmulvey/trashmap/internal/app/db"
@@ -26,7 +24,7 @@ func GetPickupAreasWithinArea(config *config.Config, points *gps.Area) (gps.Map,
 		var err error
 		areas[i], err = gps.NewAreaFromPostGISString(area)
 		if err != nil {
-			return nil, errors.New("unable to marshal coordinates from db")
+			return nil, fmt.Errorf("unable to marshal coordinates from db: %w", err)
 		}
 	}
 
@@ -35,20 +33,16 @@ func GetPickupAreasWithinArea(config *config.Config, points *gps.Area) (gps.Map,
 
 // SaveArea adds the user's pickup area to the areas table.
 // Currently we do not check if this new area overlaps any others.
-func SaveArea(config *config.Config, userID int, polygonStr string) (int64, error) {
-	var polygonArr = strings.Split(polygonStr, ",")
-
-	// first check that we got enough data
-	if len(polygonArr)%2 != 0 {
-		return -1, errors.New("gps points are malformed (lenght is odd, should be even given they are pairs")
+func SaveArea(config *config.Config, userID int64, polygon *gps.Area) (int64, error) {
+	var err = db.InsertArea(config.DBConn, userID, polygon.CoordinatesToPostGISString())
+	if err != nil {
+		return -1, err
 	}
 
-	// chech that the things in between the commas are actually floats
-	for _, point := range polygonArr {
-		if _, err := strconv.ParseFloat(point, 64); err != nil {
-			return -1, err
-		}
-	}
+	return db.GetAreaID(config.DBConn, userID, polygon.CoordinatesToPostGISString())
+}
 
-	return db.InsertArea(config.DBConn, userID, polygonStr)
+// ReomveArea removes the user's pickup area to the areas table.
+func RemoveArea(config *config.Config, userID int64, polygon *gps.Area) error {
+	return db.DeleteArea(config.DBConn, userID)
 }

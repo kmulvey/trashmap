@@ -26,13 +26,13 @@ func NewAreaFromJSONString(areaStr string) (*Area, error) {
 }
 
 func NewAreaFromPostGISString(areaStr string) (*Area, error) {
-	var areaSplit = strings.Split(areaStr, ",")
+	var areaSplit = strings.Split(strings.TrimSpace(areaStr), ",")
 	var area = new(Area)
 	area.Coords = make([]*Coordinate, len(areaSplit))
 
 	for i, a := range areaSplit {
 		var err error
-		area.Coords[i], err = NewCoordinateFromPostGISString(a)
+		area.Coords[i], err = NewCoordinateFromPostGISString(strings.TrimSpace(a))
 		if err != nil {
 			return nil, err
 		}

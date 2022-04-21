@@ -13,7 +13,7 @@ import (
 // CreatePickupArea handler takes a POST'd gps string and
 // adds it to the database.
 func CreatePickupArea(config *config.Config, c *gin.Context) {
-	var polygonStr = c.PostForm("polygon")
+	var areaStr = c.PostForm("area")
 	var session = sessions.Default(c)
 	var userIDIFace = session.Get("user_id")
 	var userID, ok = userIDIFace.(int)
@@ -28,7 +28,19 @@ func CreatePickupArea(config *config.Config, c *gin.Context) {
 		return
 	}
 
-	var id, err = areas.SaveArea(config, userID, polygonStr)
+	var polygon, err = gps.NewAreaFromJSONString(areaStr)
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			gin.H{
+				"error":     "unable to unmarshal gps json data",
+				"raw_error": err.Error(),
+			},
+		)
+		return
+	}
+
+	id, err := areas.SaveArea(config, userID, polygon)
 	if err != nil {
 		c.JSON(
 			http.StatusInternalServerError,

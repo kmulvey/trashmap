@@ -10,6 +10,7 @@ func GetUserIDByEmail(db *sql.DB, email string) (int64, error) {
 	return id, err
 }
 
+// we cannot use rs.LastInsertId() because its not supported by pq
 // https://github.com/lib/pq/issues/24
 func InsertUser(db *sql.DB, email, password string, contactAllowed bool) error {
 	var stmt = `INSERT INTO users(email, password_hash, contact_allowed) VALUES($1, $2, $3)`
