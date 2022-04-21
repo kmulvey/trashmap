@@ -1,6 +1,7 @@
 package users
 
 import (
+	"context"
 	"testing"
 
 	"github.com/kmulvey/trashmap/internal/app/config"
@@ -27,6 +28,6 @@ func TestUserFlow(t *testing.T) {
 	err = Remove(config, "testuserflow@site.com")
 	assert.NoError(t, err)
 
-	_, err = config.DBConn.Exec("drop schema " + schema + " cascade")
+	_, err = config.DBConn.Exec(context.Background(), "drop schema "+schema+" cascade")
 	assert.NoError(t, err)
 }

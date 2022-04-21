@@ -1,6 +1,7 @@
 package areas
 
 import (
+	"context"
 	"testing"
 
 	"github.com/kmulvey/trashmap/internal/app/config"
@@ -39,6 +40,6 @@ func TestAreaFlow(t *testing.T) {
 	err = users.Remove(config, "testareaflow@site.com")
 	assert.NoError(t, err)
 
-	_, err = config.DBConn.Exec("drop schema " + schema + " cascade")
+	_, err = config.DBConn.Exec(context.Background(), "drop schema "+schema+" cascade")
 	assert.NoError(t, err)
 }

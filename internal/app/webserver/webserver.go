@@ -10,6 +10,7 @@ import (
 	"github.com/gin-contrib/sessions/postgres"
 	"github.com/gin-gonic/autotls"
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v4/stdlib"
 	"github.com/kmulvey/trashmap/internal/app/config"
 	log "github.com/sirupsen/logrus"
 )
@@ -46,7 +47,8 @@ func StartWebServer(config *config.Config) error {
 	}))
 
 	// session
-	store, err := postgres.NewStore(config.DBConn, []byte("secret"))
+	var sqlDB = stdlib.OpenDB(*config.DBConn.Config())
+	store, err := postgres.NewStore(sqlDB, []byte("secret"))
 	if err != nil {
 		return err
 	}

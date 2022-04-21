@@ -1,8 +1,7 @@
 package config
 
 import (
-	"database/sql"
-
+	"github.com/jackc/pgx/v4"
 	"github.com/kmulvey/trashmap/internal/app/db"
 )
 
@@ -14,7 +13,7 @@ type Config struct {
 	DBSchema   string
 	DBHostname string
 	DBPort     int
-	DBConn     *sql.DB
+	DBConn     *pgx.Conn
 
 	PasswordSalt string
 

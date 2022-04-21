@@ -1,10 +1,10 @@
 package db
 
 import (
-	"database/sql"
+	"context"
 	"fmt"
 
-	_ "github.com/lib/pq"
+	"github.com/jackc/pgx/v4"
 )
 
 func getCreateSql(schema string) string {
@@ -29,27 +29,28 @@ $$;`, schema, schema, schema, schema)
 }
 
 // DBConnect connects to postgres and returns the handle
-func DBConnect(host, user, password, dbName, schemaName string, port int) (*sql.DB, error) {
+func DBConnect(host, user, password, dbName, schemaName string, port int) (*pgx.Conn, error) {
 	var psqlconn = fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbName)
 
 	// open database
-	var db, err = sql.Open("postgres", psqlconn)
+	var ctx = context.Background()
+	var db, err = pgx.Connect(ctx, psqlconn)
 	if err != nil {
 		return nil, err
 	}
 
 	// check db
-	err = db.Ping()
+	err = db.Ping(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	// init schema & tables
-	_, err = db.Exec("CREATE SCHEMA IF NOT EXISTS " + schemaName)
+	_, err = db.Exec(ctx, "CREATE SCHEMA IF NOT EXISTS "+schemaName)
 	if err != nil {
 		return nil, err
 	}
-	_, err = db.Exec(getCreateSql(schemaName))
+	_, err = db.Exec(ctx, getCreateSql(schemaName))
 
 	return db, err
 }
