@@ -14,7 +14,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func StartWebServer(config *config.Config, runLocal bool) error {
+const runLocal = "http://localhost"
+
+func StartWebServer(config *config.Config) error {
 	var router = gin.Default()
 
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
@@ -74,7 +76,7 @@ func StartWebServer(config *config.Config, runLocal bool) error {
 	router.POST("/areas", func(c *gin.Context) { GetPickupAreasWithinArea(config, c) })
 	router.PUT("/area", IsLoggedIn, func(c *gin.Context) { CreatePickupArea(config, c) })
 
-	if runLocal {
+	if config.HTTPAddr == runLocal {
 		log.Fatal(router.Run(":8000"))
 	} else {
 		log.Fatal(autotls.Run(router, config.HTTPAddr))
