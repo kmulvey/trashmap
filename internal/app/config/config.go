@@ -41,6 +41,12 @@ func NewConfig(DBUsername, DBPassword, DBName, DBHostname string, DBPort int, HT
 	return &c, err
 }
 
+var globalTestConfig *Config // singleton for tests
+
 func NewTestConfig() (*Config, error) {
-	return NewConfig("postgres", "postgres", "postgres", "localhost", 5432, "http://localhost", "salt", "salt", "salt")
+	var err error
+	if globalTestConfig == nil {
+		globalTestConfig, err = NewConfig("postgres", "postgres", "postgres", "localhost", 5432, "http://localhost", "salt", "salt", "salt")
+	}
+	return globalTestConfig, err
 }
