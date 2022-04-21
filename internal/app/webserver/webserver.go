@@ -48,7 +48,7 @@ func StartWebServer(config *config.Config) error {
 
 	// session
 	var sqlDB = stdlib.OpenDB(*config.DBConn.Config())
-	store, err := postgres.NewStore(sqlDB, []byte("secret"))
+	store, err := postgres.NewStore(sqlDB, []byte(config.PasswordSalt))
 	if err != nil {
 		return err
 	}
