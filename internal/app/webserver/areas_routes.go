@@ -45,7 +45,7 @@ func CreatePickupArea(config *config.Config, c *gin.Context) {
 		c.JSON(
 			http.StatusInternalServerError,
 			gin.H{
-				"error":     "unable to remove user",
+				"error":     "unable to save area",
 				"raw_error": err.Error(),
 			},
 		)
