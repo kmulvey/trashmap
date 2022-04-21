@@ -43,10 +43,11 @@ jobs:
         uses: golangci/golangci-lint-action@v2
         with:
           version: latest
+          args: --timeout=5m
       
       - name: Build & Test
         run: |
-          go mod tidy -compat=1.17
+          go mod tidy 
           go test -v -race -count 1 ./...
           go build -v -ldflags="-s -w" ./...
 
