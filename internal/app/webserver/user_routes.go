@@ -32,7 +32,17 @@ func Login(config *config.Config, c *gin.Context) {
 	var session = sessions.Default(c)
 	session.Set("user_id", userID)
 	session.Set("contact_allowed", contactAllowed)
-	session.Save()
+	err = session.Save()
+	if err != nil {
+		c.JSON(
+			http.StatusInternalServerError,
+			gin.H{
+				"error":     "unable to save session",
+				"raw_error": err.Error(),
+			},
+		)
+		return
+	}
 	c.Request.SetBasicAuth(email, password)
 	c.SetCookie("session_id", session.ID(), 3600, "/", config.HTTPAddr, true, true)
 	c.SetCookie("user_id", fmt.Sprintf("%d", userID), 3600, "/", config.HTTPAddr, true, true)
@@ -76,7 +86,17 @@ func CreateUser(config *config.Config, c *gin.Context) {
 	var session = sessions.Default(c)
 	session.Set("user_id", userID)
 	session.Set("contact_allowed", contactAllowed)
-	session.Save()
+	err = session.Save()
+	if err != nil {
+		c.JSON(
+			http.StatusInternalServerError,
+			gin.H{
+				"error":     "unable to save session",
+				"raw_error": err.Error(),
+			},
+		)
+		return
+	}
 	c.Request.SetBasicAuth(email, password)
 	c.SetCookie("session_id", session.ID(), 3600, "/", config.HTTPAddr, true, true)
 	c.SetCookie("user_id", fmt.Sprintf("%d", userID), 3600, "/", config.HTTPAddr, true, true)
