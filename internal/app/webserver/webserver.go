@@ -70,9 +70,9 @@ func StartWebServer(config *config.Config, runLocal bool) error {
 	router.Static("/assets", "../../../web/")
 	router.POST("/login", func(c *gin.Context) { Login(config, c) })
 	router.PUT("/user", func(c *gin.Context) { CreateUser(config, c) })
-	router.DELETE("/user/:id", func(c *gin.Context) { DeleteUser(config, c) })
+	router.DELETE("/user/:id", IsLoggedIn, func(c *gin.Context) { DeleteUser(config, c) })
 	router.POST("/areas", func(c *gin.Context) { GetPickupAreasWithinArea(config, c) })
-	router.PUT("/area", func(c *gin.Context) { CreatePickupArea(config, c) })
+	router.PUT("/area", IsLoggedIn, func(c *gin.Context) { CreatePickupArea(config, c) })
 
 	if runLocal {
 		log.Fatal(router.Run(":8000"))

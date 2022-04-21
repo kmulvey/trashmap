@@ -1,6 +1,7 @@
 package webserver
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -14,10 +15,11 @@ func Login(config *config.Config, c *gin.Context) {
 	var email = c.PostForm("email")
 	var password = c.PostForm("password")
 
-	var id, contactAllowed, err = users.Login(config, email, password)
+	var userID, contactAllowed, err = users.Login(config, email, password)
 	if err != nil {
+		c.Writer.Header().Set("WWW-Authenticate", "Basic realm=Restricted")
 		c.JSON(
-			http.StatusInternalServerError,
+			http.StatusForbidden,
 			gin.H{
 				"error":     "unable to login",
 				"raw_error": err.Error(),
@@ -28,11 +30,16 @@ func Login(config *config.Config, c *gin.Context) {
 
 	// success
 	var session = sessions.Default(c)
-	session.Set("user_id", id)
+	session.Set("user_id", userID)
+	session.Set("contact_allowed", contactAllowed)
+	session.Save()
+	c.Request.SetBasicAuth(email, password)
+	c.SetCookie("session_id", session.ID(), 3600, "/", config.HTTPAddr, true, true)
+	c.SetCookie("user_id", fmt.Sprintf("%d", userID), 3600, "/", config.HTTPAddr, true, true)
 	c.JSON(
 		http.StatusOK,
 		gin.H{
-			"id":              id,
+			"id":              userID,
 			"contact_allowed": contactAllowed,
 		},
 	)
@@ -47,7 +54,7 @@ func CreateUser(config *config.Config, c *gin.Context) {
 		c.JSON(
 			http.StatusBadRequest,
 			gin.H{
-				"error":     "unable to ParseBool: " + contactAllowedStr,
+				"error":     "unable to parse contact_allowed as bool: " + contactAllowedStr,
 				"raw_error": err.Error(),
 			},
 		)
@@ -68,7 +75,11 @@ func CreateUser(config *config.Config, c *gin.Context) {
 
 	var session = sessions.Default(c)
 	session.Set("user_id", userID)
-
+	session.Set("contact_allowed", contactAllowed)
+	session.Save()
+	c.Request.SetBasicAuth(email, password)
+	c.SetCookie("session_id", session.ID(), 3600, "/", config.HTTPAddr, true, true)
+	c.SetCookie("user_id", fmt.Sprintf("%d", userID), 3600, "/", config.HTTPAddr, true, true)
 	c.Status(http.StatusOK)
 }
 
