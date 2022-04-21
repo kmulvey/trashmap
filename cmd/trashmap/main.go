@@ -18,7 +18,7 @@ func main() {
 	flag.BoolVar(&runLocal, "run-local", false, "run the webserver locally (no https)")
 	flag.Parse()
 
-	var config, err = config.NewConfig("", "", "", "", 0, "", "", "", "")
+	var config, err = config.NewConfig("postgres", "postgres", "postgres", "localhost", 5432, "http://localhost", "salt", "salt", "salt") // temporary for local dev
 	if err != nil {
 		log.Fatal(err)
 	}

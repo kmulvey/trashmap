@@ -64,10 +64,10 @@ func StartWebServer(config *config.Config, runLocal bool) error {
 	if err != nil {
 		return err
 	}
-
 	router.Use(sessions.Sessions("web-session", store))
 
 	// routes
+	router.Static("/assets", "../../../web/")
 	router.POST("/login", func(c *gin.Context) { Login(config, c) })
 	router.PUT("/user", func(c *gin.Context) { CreateUser(config, c) })
 	router.DELETE("/user/:id", func(c *gin.Context) { DeleteUser(config, c) })
@@ -75,7 +75,7 @@ func StartWebServer(config *config.Config, runLocal bool) error {
 	router.PUT("/area", func(c *gin.Context) { CreatePickupArea(config, c) })
 
 	if runLocal {
-		log.Fatal(router.Run(config.HTTPAddr))
+		log.Fatal(router.Run(":8000"))
 	} else {
 		log.Fatal(autotls.Run(router, config.HTTPAddr))
 	}
