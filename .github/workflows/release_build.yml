@@ -2,8 +2,8 @@ name: TrashMap
 
 on:  
   push:
-    tags:
-      - '*'
+    #    tags:
+    #      - '*'
 
 jobs:
   build:
