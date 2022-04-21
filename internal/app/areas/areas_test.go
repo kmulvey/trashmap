@@ -10,6 +10,8 @@ import (
 )
 
 func TestAreaFlow(t *testing.T) {
+	t.Parallel()
+
 	var config, err = config.NewTestConfig()
 	assert.NoError(t, err)
 
