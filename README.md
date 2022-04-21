@@ -4,7 +4,9 @@
 ## Run Locally
 ```
 cd deployments/local/
-docker-compose up
+docker-compose up -d
+cd ../../
+go run cmd/trashmap/main.go
 ```
 pgAdmin will come up on http://localhost:8080/browser/
 
