@@ -36,6 +36,8 @@ func configFromUserOps() (*config.Config, error) {
 	var passwordHashSalt string
 
 	var app = &cli.App{
+		Name:  "TrashMap",
+		Usage: "a website that allows people to commit to cleaning up trash in their selected area.",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:        "postgres-host",

@@ -32,8 +32,8 @@ func NewConfig(DBUsername, DBPassword, DBName, DBHostname string, DBPort int, HT
 		DBPort:                 DBPort,
 		PasswordSalt:           PasswordSalt,
 		HTTPAddr:               HTTPAddr,
-		HTTPReadSigningSecret:  HTTPReadSigningSecret,
-		HTTPWriteSigningSecret: HTTPWriteSigningSecret,
+		HTTPReadSigningSecret:  HTTPReadSigningSecret,  // not currently used, still early https://github.com/gin-contrib/httpsign
+		HTTPWriteSigningSecret: HTTPWriteSigningSecret, // not currently used, still early https://github.com/gin-contrib/httpsign
 	}
 	var err error
 	c.DBConn, err = db.DBConnect(DBHostname, DBUsername, DBPassword, DBName, DBPort)
