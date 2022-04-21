@@ -21,7 +21,7 @@ func Login(config *config.Config, email, password string) (int64, bool, error) {
 		return 0, false, fmt.Errorf("unable to hash password: %w", err)
 	}
 
-	id, dbHash, contactAllowed, err := db.Login(config.DBConn, email)
+	id, dbHash, contactAllowed, err := db.Login(config.DBConn, config.DBSchema, email)
 	if err != nil {
 		return 0, false, fmt.Errorf("unable to query db: %w", err)
 	}
@@ -43,14 +43,14 @@ func Add(config *config.Config, email, password string, contactAllowed bool) (in
 		return -1, fmt.Errorf("unable to hash password: %w", err)
 	}
 
-	err = db.InsertUser(config.DBConn, email, base64.StdEncoding.EncodeToString(dk), contactAllowed)
+	err = db.InsertUser(config.DBConn, config.DBSchema, email, base64.StdEncoding.EncodeToString(dk), contactAllowed)
 	if err != nil {
 		return -1, fmt.Errorf("unable add user to db: %w", err)
 	}
 
-	return db.GetUserIDByEmail(config.DBConn, email)
+	return db.GetUserIDByEmail(config.DBConn, config.DBSchema, email)
 }
 
 func Remove(config *config.Config, email string) error {
-	return db.DeleteUser(config.DBConn, email)
+	return db.DeleteUser(config.DBConn, config.DBSchema, email)
 }

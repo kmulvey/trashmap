@@ -29,6 +29,7 @@ func configFromUserOps() (*config.Config, error) {
 	var postgresUser string
 	var postgresPassword string
 	var postgresDBName string
+	var postgresSchemaName string
 	var postgresPort int
 	var httpHost string
 	var httpReadSignSecret string
@@ -66,6 +67,13 @@ func configFromUserOps() (*config.Config, error) {
 				Usage:       "db name",
 				EnvVars:     []string{"POSTGRES_DB_NAME"},
 				Destination: &postgresDBName,
+			},
+			&cli.StringFlag{
+				Name:        "postgres-schema-name",
+				Value:       "public",
+				Usage:       "schema name",
+				EnvVars:     []string{"POSTGRES_SCHEMA_NAME"},
+				Destination: &postgresSchemaName,
 			},
 			&cli.IntFlag{
 				Name:        "postgres-port",
@@ -109,5 +117,5 @@ func configFromUserOps() (*config.Config, error) {
 		return nil, err
 	}
 
-	return config.NewConfig(postgresUser, postgresPassword, postgresDBName, postgresHost, postgresPort, httpHost, passwordHashSalt, httpReadSignSecret, httpWriteSignSecret)
+	return config.NewConfig(postgresUser, postgresPassword, postgresDBName, postgresSchemaName, postgresHost, postgresPort, httpHost, passwordHashSalt, httpReadSignSecret, httpWriteSignSecret)
 }

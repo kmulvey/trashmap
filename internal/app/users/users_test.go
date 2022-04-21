@@ -10,7 +10,9 @@ import (
 func TestUserFlow(t *testing.T) {
 	t.Parallel()
 
-	var config, err = config.NewTestConfig()
+	var schema = "testuserflow"
+
+	var config, err = config.NewTestConfig(schema)
 	assert.NoError(t, err)
 
 	addUserID, err := Add(config, "testuserflow@site.com", "password", true)
@@ -23,5 +25,8 @@ func TestUserFlow(t *testing.T) {
 	assert.True(t, contact)
 
 	err = Remove(config, "testuserflow@site.com")
+	assert.NoError(t, err)
+
+	_, err = config.DBConn.Exec("drop schema " + schema + " cascade")
 	assert.NoError(t, err)
 }

@@ -13,7 +13,7 @@ import (
 func GetPickupAreasWithinArea(config *config.Config, points *gps.Area) (gps.Map, error) {
 
 	// get polys from db
-	var areasStrArr, err = db.GetPickupAreasWithinArea(config.DBConn, points.CoordinatesToPostGISString())
+	var areasStrArr, err = db.GetPickupAreasWithinArea(config.DBConn, config.DBSchema, points.CoordinatesToPostGISString())
 	if err != nil {
 		return nil, err
 	}
@@ -34,15 +34,15 @@ func GetPickupAreasWithinArea(config *config.Config, points *gps.Area) (gps.Map,
 // SaveArea adds the user's pickup area to the areas table.
 // Currently we do not check if this new area overlaps any others.
 func SaveArea(config *config.Config, userID int64, polygon *gps.Area) (int64, error) {
-	var err = db.InsertArea(config.DBConn, userID, polygon.CoordinatesToPostGISString())
+	var err = db.InsertArea(config.DBConn, config.DBSchema, userID, polygon.CoordinatesToPostGISString())
 	if err != nil {
 		return -1, err
 	}
 
-	return db.GetAreaID(config.DBConn, userID, polygon.CoordinatesToPostGISString())
+	return db.GetAreaID(config.DBConn, config.DBSchema, userID, polygon.CoordinatesToPostGISString())
 }
 
 // ReomveArea removes the user's pickup area to the areas table.
 func RemoveArea(config *config.Config, userID int64, polygon *gps.Area) error {
-	return db.DeleteArea(config.DBConn, userID)
+	return db.DeleteArea(config.DBConn, config.DBSchema, userID)
 }

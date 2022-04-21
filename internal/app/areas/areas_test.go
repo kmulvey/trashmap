@@ -12,7 +12,9 @@ import (
 func TestAreaFlow(t *testing.T) {
 	t.Parallel()
 
-	var config, err = config.NewTestConfig()
+	var schema = "testareaflow"
+
+	var config, err = config.NewTestConfig(schema)
 	assert.NoError(t, err)
 
 	addUserID, err := users.Add(config, "testareaflow@site.com", "password", true)
@@ -35,5 +37,8 @@ func TestAreaFlow(t *testing.T) {
 	assert.NoError(t, err)
 
 	err = users.Remove(config, "testareaflow@site.com")
+	assert.NoError(t, err)
+
+	_, err = config.DBConn.Exec("drop schema " + schema + " cascade")
 	assert.NoError(t, err)
 }

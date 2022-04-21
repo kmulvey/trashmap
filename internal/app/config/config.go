@@ -11,6 +11,7 @@ type Config struct {
 	DBUsername string
 	DBPassword string
 	DBName     string
+	DBSchema   string
 	DBHostname string
 	DBPort     int
 	DBConn     *sql.DB
@@ -23,11 +24,12 @@ type Config struct {
 }
 
 // NewConfig is a Config constructor
-func NewConfig(DBUsername, DBPassword, DBName, DBHostname string, DBPort int, HTTPAddr, PasswordSalt, HTTPReadSigningSecret, HTTPWriteSigningSecret string) (*Config, error) {
+func NewConfig(DBUsername, DBPassword, DBName, DBSchema, DBHostname string, DBPort int, HTTPAddr, PasswordSalt, HTTPReadSigningSecret, HTTPWriteSigningSecret string) (*Config, error) {
 	var c = Config{
 		DBUsername:             DBUsername,
 		DBPassword:             DBPassword,
 		DBName:                 DBName,
+		DBSchema:               DBSchema,
 		DBHostname:             DBHostname,
 		DBPort:                 DBPort,
 		PasswordSalt:           PasswordSalt,
@@ -36,17 +38,11 @@ func NewConfig(DBUsername, DBPassword, DBName, DBHostname string, DBPort int, HT
 		HTTPWriteSigningSecret: HTTPWriteSigningSecret, // not currently used, still early https://github.com/gin-contrib/httpsign
 	}
 	var err error
-	c.DBConn, err = db.DBConnect(DBHostname, DBUsername, DBPassword, DBName, DBPort)
+	c.DBConn, err = db.DBConnect(DBHostname, DBUsername, DBPassword, DBName, DBSchema, DBPort)
 
 	return &c, err
 }
 
-var globalTestConfig *Config // singleton for tests
-
-func NewTestConfig() (*Config, error) {
-	var err error
-	if globalTestConfig == nil {
-		globalTestConfig, err = NewConfig("postgres", "postgres", "postgres", "localhost", 5432, "http://localhost", "salt", "salt", "salt")
-	}
-	return globalTestConfig, err
+func NewTestConfig(schemaName string) (*Config, error) {
+	return NewConfig("postgres", "postgres", "postgres", schemaName, "localhost", 5432, "http://localhost", "salt", "salt", "salt")
 }

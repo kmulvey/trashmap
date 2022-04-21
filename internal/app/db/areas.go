@@ -10,21 +10,21 @@ import (
 // Currently we do not check if this new area overlaps any others.
 // we cannot use rs.LastInsertId() because its not supported by pq
 // https://github.com/lib/pq/issues/24
-func InsertArea(db *sql.DB, userID int64, polygon string) error {
+func InsertArea(db *sql.DB, schema string, userID int64, polygon string) error {
 	// we use fmt.Sprintf to fill in the polygon string because the sql driver
 	// cant see variables within '', which are required by ST_GeometryFromText.
 	// The polygon value has been processed quite a bit by this point anyway.
-	var stmt = fmt.Sprintf(`INSERT INTO areas(user_id, polygon) VALUES($1, ST_GeometryFromText('POLYGON((%s))'))`, polygon)
+	var stmt = fmt.Sprintf(`INSERT INTO %s.areas(user_id, polygon) VALUES($1, ST_GeometryFromText('POLYGON((%s))'))`, schema, polygon)
 	var _, err = db.Exec(stmt, userID)
 	return err
 }
 
 // GetAreaID returns the id of an area given userID and the area
-func GetAreaID(db *sql.DB, userID int64, polygon string) (int64, error) {
+func GetAreaID(db *sql.DB, schema string, userID int64, polygon string) (int64, error) {
 	// we use fmt.Sprintf to fill in the polygon string because the sql driver
 	// cant see variables within '', which are required by ST_GeometryFromText.
 	// The polygon value has been processed quite a bit by this point anyway.
-	var stmt = fmt.Sprintf(`SELECT id FROM areas where user_id=$1 and polygon=ST_GeometryFromText('POLYGON((%s))')`, polygon)
+	var stmt = fmt.Sprintf(`SELECT id FROM %s.areas where user_id=$1 and polygon=ST_GeometryFromText('POLYGON((%s))')`, schema, polygon)
 	var id int64
 	var err = db.QueryRow(stmt, userID).Scan(&id)
 	if err != nil {
@@ -35,20 +35,20 @@ func GetAreaID(db *sql.DB, userID int64, polygon string) (int64, error) {
 }
 
 // DeleteArea removes the user's pickup area from the areas table.
-func DeleteArea(db *sql.DB, userID int64) error {
-	var stmt = `DELETE FROM areas WHERE user_id=$1`
+func DeleteArea(db *sql.DB, schema string, userID int64) error {
+	var stmt = fmt.Sprintf(`DELETE FROM %s.areas WHERE user_id=$1`, schema)
 	var _, err = db.Exec(stmt, userID)
 	return err
 }
 
 // GetPickupAreasWithinArea takes an area as a set of GPS points and
 // returns all the trash pickup areas within it.
-func GetPickupAreasWithinArea(db *sql.DB, polygon string) ([]string, error) {
+func GetPickupAreasWithinArea(db *sql.DB, schema string, polygon string) ([]string, error) {
 	// we use fmt.Sprintf to fill in the polygon string because the sql driver
 	// cant see variables within '', which are required by ST_GeometryFromText.
 	// The polygon value has been processed quite a bit by this point anyway.
 	// https://www.postgis.net/docs/ST_Within.html
-	var stmt = fmt.Sprintf(`SELECT id, user_id, ST_AsText(polygon) as poly FROM areas WHERE ST_Contains(ST_GeomFromText('POLYGON((%s))'), polygon)`, polygon)
+	var stmt = fmt.Sprintf(`SELECT id, user_id, ST_AsText(polygon) as poly FROM %s.areas WHERE ST_Contains(ST_GeomFromText('POLYGON((%s))'), polygon)`, schema, polygon)
 	var rs, err = db.Query(stmt)
 	if err != nil {
 		return nil, err
