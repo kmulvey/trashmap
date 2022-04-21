@@ -1,6 +1,8 @@
 package webserver
 
 import (
+	"net/http"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-contrib/secure"
@@ -30,8 +32,8 @@ func StartWebServer(config *config.Config) error {
 
 	// secure headers
 	router.Use(secure.New(secure.Config{
-		AllowedHosts:          []string{config.HTTPAddr},
-		SSLRedirect:           true,
+		//		AllowedHosts:          []string{config.HTTPAddr},
+		//		SSLRedirect:           true,
 		STSSeconds:            315360000,
 		STSIncludeSubdomains:  true,
 		FrameDeny:             true,
@@ -48,15 +50,16 @@ func StartWebServer(config *config.Config) error {
 	if err != nil {
 		return err
 	}
+	// auth'd routes
 	router.Use(sessions.Sessions("web-session", store))
+	router.DELETE("/user/:id", IsLoggedIn, func(c *gin.Context) { DeleteUser(config, c) })
+	router.POST("/areas", IsLoggedIn, func(c *gin.Context) { GetPickupAreasWithinArea(config, c) })
+	router.PUT("/area", IsLoggedIn, func(c *gin.Context) { CreatePickupArea(config, c) })
 
-	// routes
-	router.Static("/assets", "../../../web/")
+	// open routes
+	router.StaticFS("/assets", http.Dir("./web"))
 	router.POST("/login", func(c *gin.Context) { Login(config, c) })
 	router.PUT("/user", func(c *gin.Context) { CreateUser(config, c) })
-	router.DELETE("/user/:id", IsLoggedIn, func(c *gin.Context) { DeleteUser(config, c) })
-	router.POST("/areas", func(c *gin.Context) { GetPickupAreasWithinArea(config, c) })
-	router.PUT("/area", IsLoggedIn, func(c *gin.Context) { CreatePickupArea(config, c) })
 
 	if config.HTTPAddr == runLocal {
 		log.Fatal(router.Run(":8000"))
