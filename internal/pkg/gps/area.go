@@ -81,15 +81,6 @@ func (a *Area) ToJSON() (string, error) {
 }
 
 func (m *Map) ToJSON() (string, error) {
-	var areas = make([]string, len(*m))
-	var err error
-	for i, area := range *m {
-		areas[i], err = area.ToJSON()
-		if err != nil {
-			return "", err
-		}
-	}
-
-	js, err := json.Marshal(areas)
+	var js, err = json.Marshal(m)
 	return string(js), err
 }

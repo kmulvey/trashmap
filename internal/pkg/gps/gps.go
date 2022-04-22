@@ -36,5 +36,5 @@ func NewCoordinateFromPostGISString(coordinateStr string) (*Coordinate, error) {
 
 // ToPostGISString prints the Coordinate space separated for postgis
 func (c *Coordinate) ToPostGISString() string {
-	return fmt.Sprintf("%f %f", c.Lat, c.Long)
+	return strconv.FormatFloat(c.Lat, 'f', 14, 64) + " " + strconv.FormatFloat(c.Long, 'f', 14, 64)
 }

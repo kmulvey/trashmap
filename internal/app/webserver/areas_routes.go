@@ -67,10 +67,6 @@ func GetPickupAreasWithinArea(config *config.Config, c *gin.Context) {
 	}
 
 	// all good
-	c.JSON(
-		http.StatusOK,
-		gin.H{
-			"pickup_areas": string(pickupAreasJSON),
-		},
-	)
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, string(pickupAreasJSON))
 }
