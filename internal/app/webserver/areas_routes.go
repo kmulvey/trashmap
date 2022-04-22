@@ -1,9 +1,7 @@
 package webserver
 
 import (
-	"fmt"
 	"net/http"
-	"reflect"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -18,7 +16,6 @@ func CreatePickupArea(config *config.Config, c *gin.Context) {
 	var areaStr = c.PostForm("area")
 	var session = sessions.Default(c)
 	var userIDIFace = session.Get("user_id")
-	fmt.Println(reflect.TypeOf(userIDIFace))
 	var userID, ok = userIDIFace.(int64)
 	if !ok {
 		sendJSONError(c, http.StatusInternalServerError, "unable to user get user_id from session", nil)
