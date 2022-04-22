@@ -1,7 +1,6 @@
 package webserver
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -70,9 +69,6 @@ func handleSuccess(config *config.Config, c *gin.Context, userID int64, contactA
 		sendJSONError(c, http.StatusInternalServerError, "unable to save session", err)
 		return
 	}
-	c.Request.SetBasicAuth(email, password)
-	c.SetCookie("session_id", session.ID(), 3600, "/", config.HTTPAddr, true, true)
-	c.SetCookie("user_id", fmt.Sprintf("%d", userID), 3600, "/", config.HTTPAddr, true, true)
 	c.JSON(
 		http.StatusOK,
 		gin.H{
