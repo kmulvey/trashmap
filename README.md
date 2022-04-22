@@ -93,3 +93,16 @@ pgAdmin will come up on http://localhost:8080/browser/
   }
 ]
 ```
+## curl examples
+### Create User
+```
+curl --cookie-jar jar.txt -v -XPUT localhost:8000/user -F 'contact_allowed=true' -F 'email=me@gmail.com' -F 'password=password'
+```
+### Login
+```
+curl --cookie-jar jar.txt -v -XPOST localhost:8000/login -F 'email=me@gmail.com' -F 'password=password'
+```
+### Create Area
+```
+curl -b jar.txt -v -XPUT localhost:8000/area -F 'user_id=1' -F 'area=[{"lat":40.259822802779816,"long":-105.65290936674407},{"lat":40.26201885227386,"long":-105.05519389236237},{"lat":39.95833557541779,"long":-105.05494458234654},{"lat":39.93788639054093,"long":-105.68899269947714}]'
+```
