@@ -31,10 +31,12 @@ func configFromUserOps() (*config.Config, error) {
 	var postgresDBName string
 	var postgresSchemaName string
 	var postgresPort int
-	var httpHost string
+	var https bool
+	var httpBindAddr string
 	var httpReadSignSecret string
 	var httpWriteSignSecret string
 	var passwordHashSalt string
+	var development bool
 
 	var app = &cli.App{
 		Name:  "TrashMap",
@@ -82,12 +84,19 @@ func configFromUserOps() (*config.Config, error) {
 				EnvVars:     []string{"POSTGRES_PORT"},
 				Destination: &postgresPort,
 			},
+			&cli.BoolFlag{
+				Name:        "https",
+				Value:       true,
+				Usage:       "https",
+				EnvVars:     []string{"HTTPS"},
+				Destination: &https,
+			},
 			&cli.StringFlag{
-				Name:        "http-host",
-				Value:       "http://localhost",
-				Usage:       "http host",
-				EnvVars:     []string{"HTTP_HOST"},
-				Destination: &httpHost,
+				Name:        "http-bind-addr",
+				Value:       ":8000",
+				Usage:       "address for server to bind to (:8000)",
+				EnvVars:     []string{"HTTP_BIND_ADDR"},
+				Destination: &httpBindAddr,
 			},
 			&cli.StringFlag{
 				Name:        "http-read-sign-secret",
@@ -110,6 +119,13 @@ func configFromUserOps() (*config.Config, error) {
 				EnvVars:     []string{"PASSWORD_HASH_SALT"},
 				Destination: &httpWriteSignSecret,
 			},
+			&cli.BoolFlag{
+				Name:        "dev",
+				Value:       true,
+				Usage:       "development server for local usage only (insecure certs)",
+				EnvVars:     []string{"DEV"},
+				Destination: &development,
+			},
 		},
 	}
 	var err = app.Run(os.Args)
@@ -117,5 +133,5 @@ func configFromUserOps() (*config.Config, error) {
 		return nil, err
 	}
 
-	return config.NewConfig(postgresUser, postgresPassword, postgresDBName, postgresSchemaName, postgresHost, postgresPort, httpHost, passwordHashSalt, httpReadSignSecret, httpWriteSignSecret)
+	return config.NewConfig(postgresUser, postgresPassword, postgresDBName, postgresSchemaName, postgresHost, postgresPort, httpBindAddr, passwordHashSalt, httpReadSignSecret, httpWriteSignSecret, https, development)
 }

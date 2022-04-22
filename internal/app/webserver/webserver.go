@@ -2,6 +2,7 @@ package webserver
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
@@ -15,8 +16,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const runLocal = "http://localhost"
-
 func StartWebServer(config *config.Config) error {
 	var router = gin.Default()
 
@@ -28,7 +27,11 @@ func StartWebServer(config *config.Config) error {
 
 	// CORS
 	var corsConfig = cors.DefaultConfig()
-	corsConfig.AllowOrigins = []string{config.HTTPAddr}
+	var hostname, err = os.Hostname()
+	if err != nil {
+		log.Fatal(err)
+	}
+	corsConfig.AllowOrigins = []string{"https://" + hostname}
 	router.Use(cors.New(corsConfig))
 
 	// secure headers
@@ -63,10 +66,13 @@ func StartWebServer(config *config.Config) error {
 	router.POST("/login", func(c *gin.Context) { Login(config, c) })
 	router.PUT("/user", func(c *gin.Context) { CreateUser(config, c) })
 
-	if config.HTTPAddr == runLocal {
+	if !config.HTTPS {
+		log.Fatal(router.Run(config.HTTPBindAddr))
+	} else if config.Development {
+		log.Warn("Development server, using insecure certs")
 		log.Fatal(router.RunTLS(":8000", "./keys/cert.pem", "./keys/key.pem"))
 	} else {
-		log.Fatal(autotls.Run(router, config.HTTPAddr))
+		log.Fatal(autotls.Run(router, config.HTTPBindAddr))
 	}
 
 	return nil
