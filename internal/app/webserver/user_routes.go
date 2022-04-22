@@ -23,24 +23,7 @@ func Login(config *config.Config, c *gin.Context) {
 	}
 
 	// success
-	var session = sessions.Default(c)
-	session.Set("user_id", userID)
-	session.Set("contact_allowed", contactAllowed)
-	err = session.Save()
-	if err != nil {
-		sendJSONError(c, http.StatusInternalServerError, "unable to save session", err)
-		return
-	}
-	c.Request.SetBasicAuth(email, password)
-	c.SetCookie("session_id", session.ID(), 3600, "/", config.HTTPAddr, true, true)
-	c.SetCookie("user_id", fmt.Sprintf("%d", userID), 3600, "/", config.HTTPAddr, true, true)
-	c.JSON(
-		http.StatusOK,
-		gin.H{
-			"id":              userID,
-			"contact_allowed": contactAllowed,
-		},
-	)
+	handleSuccess(config, c, userID, contactAllowed, email, password)
 }
 
 func CreateUser(config *config.Config, c *gin.Context) {
@@ -59,18 +42,8 @@ func CreateUser(config *config.Config, c *gin.Context) {
 		return
 	}
 
-	var session = sessions.Default(c)
-	session.Set("user_id", userID)
-	session.Set("contact_allowed", contactAllowed)
-	err = session.Save()
-	if err != nil {
-		sendJSONError(c, http.StatusInternalServerError, "unable to save session", err)
-		return
-	}
-	c.Request.SetBasicAuth(email, password)
-	c.SetCookie("session_id", session.ID(), 3600, "/", config.HTTPAddr, true, true)
-	c.SetCookie("user_id", fmt.Sprintf("%d", userID), 3600, "/", config.HTTPAddr, true, true)
-	c.Status(http.StatusOK)
+	// success
+	handleSuccess(config, c, userID, contactAllowed, email, password)
 }
 
 func DeleteUser(config *config.Config, c *gin.Context) {
@@ -86,4 +59,25 @@ func DeleteUser(config *config.Config, c *gin.Context) {
 	session.Delete(session.Get("user_id"))
 
 	c.Status(http.StatusOK)
+}
+
+func handleSuccess(config *config.Config, c *gin.Context, userID int64, contactAllowed bool, email, password string) {
+	var session = sessions.Default(c)
+	session.Set("user_id", userID)
+	session.Set("contact_allowed", contactAllowed)
+	var err = session.Save()
+	if err != nil {
+		sendJSONError(c, http.StatusInternalServerError, "unable to save session", err)
+		return
+	}
+	c.Request.SetBasicAuth(email, password)
+	c.SetCookie("session_id", session.ID(), 3600, "/", config.HTTPAddr, true, true)
+	c.SetCookie("user_id", fmt.Sprintf("%d", userID), 3600, "/", config.HTTPAddr, true, true)
+	c.JSON(
+		http.StatusOK,
+		gin.H{
+			"id":              userID,
+			"contact_allowed": contactAllowed,
+		},
+	)
 }

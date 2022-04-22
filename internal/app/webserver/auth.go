@@ -3,7 +3,6 @@ package webserver
 import (
 	"fmt"
 	"net/http"
-	"reflect"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -11,28 +10,19 @@ import (
 
 func IsLoggedIn(c *gin.Context) {
 	var session = sessions.Default(c)
-	fmt.Println(reflect.TypeOf(session.Get("user_id")))
 	var sessionUserIDInt, ok = session.Get("user_id").(int64)
 	if !ok {
-		c.JSON(
-			http.StatusBadRequest,
-			gin.H{
-				"error": "unable to parse user_id from session",
-			},
-		)
+		sendJSONError(c, http.StatusForbidden, "unable to parse user_id from session", nil)
 		c.Abort()
+		return
 	}
 
 	var cookieSessionID, _ = c.Cookie("session_id")
 	cookieUserID, err := c.Cookie("user_id")
 	if err != nil {
-		c.JSON(
-			http.StatusBadRequest,
-			gin.H{
-				"error": "unable to parse user_id from cookie",
-			},
-		)
+		sendJSONError(c, http.StatusBadRequest, "unable to parse user_id from cookie", err)
 		c.Abort()
+		return
 	}
 
 	if cookieSessionID == session.ID() && cookieUserID == fmt.Sprintf("%d", sessionUserIDInt) {
