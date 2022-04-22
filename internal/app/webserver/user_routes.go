@@ -18,13 +18,7 @@ func Login(config *config.Config, c *gin.Context) {
 	var userID, contactAllowed, err = users.Login(config, email, password)
 	if err != nil {
 		c.Writer.Header().Set("WWW-Authenticate", "Basic realm=Restricted")
-		c.JSON(
-			http.StatusForbidden,
-			gin.H{
-				"error":     "unable to login",
-				"raw_error": err.Error(),
-			},
-		)
+		sendJSONError(c, http.StatusForbidden, "unable to login", err)
 		return
 	}
 
@@ -34,13 +28,7 @@ func Login(config *config.Config, c *gin.Context) {
 	session.Set("contact_allowed", contactAllowed)
 	err = session.Save()
 	if err != nil {
-		c.JSON(
-			http.StatusInternalServerError,
-			gin.H{
-				"error":     "unable to save session",
-				"raw_error": err.Error(),
-			},
-		)
+		sendJSONError(c, http.StatusInternalServerError, "unable to save session", err)
 		return
 	}
 	c.Request.SetBasicAuth(email, password)
@@ -61,25 +49,13 @@ func CreateUser(config *config.Config, c *gin.Context) {
 	var contactAllowedStr = c.PostForm("contact_allowed")
 	var contactAllowed, err = strconv.ParseBool(contactAllowedStr)
 	if err != nil {
-		c.JSON(
-			http.StatusBadRequest,
-			gin.H{
-				"error":     "unable to parse contact_allowed as bool: " + contactAllowedStr,
-				"raw_error": err.Error(),
-			},
-		)
+		sendJSONError(c, http.StatusBadRequest, "unable to parse contact_allowed as bool: "+contactAllowedStr, err)
 		return
 	}
 
 	userID, err := users.Add(config, email, password, contactAllowed)
 	if err != nil {
-		c.JSON(
-			http.StatusInternalServerError,
-			gin.H{
-				"error":     "unable to add user",
-				"raw_error": err.Error(),
-			},
-		)
+		sendJSONError(c, http.StatusInternalServerError, "unable to add user", err)
 		return
 	}
 
@@ -88,13 +64,7 @@ func CreateUser(config *config.Config, c *gin.Context) {
 	session.Set("contact_allowed", contactAllowed)
 	err = session.Save()
 	if err != nil {
-		c.JSON(
-			http.StatusInternalServerError,
-			gin.H{
-				"error":     "unable to save session",
-				"raw_error": err.Error(),
-			},
-		)
+		sendJSONError(c, http.StatusInternalServerError, "unable to save session", err)
 		return
 	}
 	c.Request.SetBasicAuth(email, password)
@@ -107,13 +77,7 @@ func DeleteUser(config *config.Config, c *gin.Context) {
 	var email = c.Param("email")
 	var err = users.Remove(config, email)
 	if err != nil {
-		c.JSON(
-			http.StatusInternalServerError,
-			gin.H{
-				"error":     "unable to remove user",
-				"raw_error": err.Error(),
-			},
-		)
+		sendJSONError(c, http.StatusInternalServerError, "unable to remove user", err)
 		return
 	}
 
