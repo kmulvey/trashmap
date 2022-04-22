@@ -1,5 +1,5 @@
 # Trash Map
-[![TrashMap](https://github.com/kmulvey/trashmap/actions/workflows/release_build.yml/badge.svg)](https://github.com/kmulvey/trashmap/actions/workflows/release_build.yml) [![Go Report Card](https://goreportcard.com/badge/github.com/kmulvey/trashmap)](https://goreportcard.com/report/github.com/kmulvey/trashmap) [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://vshymanskyy.github.io/StandWithUkraine)
+[![TrashMap](https://github.com/kmulvey/trashmap/actions/workflows/release_build.yml/badge.svg)](https://github.com/kmulvey/trashmap/actions/workflows/release_build.yml) [![Go Report Card](https://goreportcard.com/badge/github.com/kmulvey/trashmap)](https://goreportcard.com/report/github.com/kmulvey/trashmap) [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://vshymanskyy.github.io/StandWithUkraine) [![Go Reference](https://pkg.go.dev/badge/github.com/kmulvey/trashmap.svg)](https://pkg.go.dev/github.com/kmulvey/trashmap)
 
 ## Run Locally
 ```
