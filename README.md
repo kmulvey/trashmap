@@ -96,18 +96,18 @@ pgAdmin will come up on http://localhost:8080/browser/
 ## curl examples
 ### Create User
 ```
-curl --cookie-jar jar.txt -v -XPUT localhost:8000/user -F 'contact_allowed=true' -F 'email=me@gmail.com' -F 'password=password'
+curl --http2-prior-knowledge  --insecure --cookie-jar jar.txt -v -XPUT https://localhost:8000/user -F 'contact_allowed=true' -F 'email=me@gmail.com' -F 'password=password'
 ```
 ### Login
 ```
-curl --cookie-jar jar.txt -v -XPOST localhost:8000/login -F 'email=me@gmail.com' -F 'password=password'
+curl --http2-prior-knowledge  --insecure --cookie-jar jar.txt -v -XPOST https://localhost:8000/login -F 'email=me@gmail.com' -F 'password=password'
 ```
 ### Create Area
 ```
-curl -b jar.txt -v -XPUT localhost:8000/area -F 'user_id=1' -F 'area=[{"lat":40.259822802779816,"long":-105.65290936674407},{"lat":40.26201885227386,"long":-105.05519389236237},{"lat":39.95833557541779,"long":-105.05494458234654},{"lat":39.93788639054093,"long":-105.68899269947714}]'
-curl -b jar.txt -v -XPUT localhost:8000/area -F 'user_id=1' -F 'area=[{"lat":36.24244932613963,"long":-112.40547934312802},{"lat":36.223086062103704,"long":-111.81857028617547},{"lat":36.00588425331162,"long":-111.83171900919251},{"lat":36.02265323852763,"long":-112.34279966186926}]'
+curl --http2-prior-knowledge  --insecure -b jar.txt -v -XPUT https://localhost:8000/area -F 'user_id=1' -F 'area=[{"lat":40.259822802779816,"long":-105.65290936674407},{"lat":40.26201885227386,"long":-105.05519389236237},{"lat":39.95833557541779,"long":-105.05494458234654},{"lat":39.93788639054093,"long":-105.68899269947714}]'
+curl --http2-prior-knowledge  --insecure -b jar.txt -v -XPUT https://localhost:8000/area -F 'user_id=1' -F 'area=[{"lat":36.24244932613963,"long":-112.40547934312802},{"lat":36.223086062103704,"long":-111.81857028617547},{"lat":36.00588425331162,"long":-111.83171900919251},{"lat":36.02265323852763,"long":-112.34279966186926}]'
 ```
 ### Get all areas within a wider area
 ```
-curl -b jar.txt -v -XPOST localhost:8000/areas -F 'area=[{"lat":40.99837454922104,"long":-109.05421673800787},{"lat":41.0004139327614,"long":-102.05758033526878},{"lat":37.015379641011805,"long":-109.05244682441632},{"lat":37.004114233165524,"long":-102.04615148062369}]'
+curl --http2-prior-knowledge  --insecure -b jar.txt -v -XPOST https://localhost:8000/areas -F 'area=[{"lat":40.99837454922104,"long":-109.05421673800787},{"lat":41.0004139327614,"long":-102.05758033526878},{"lat":37.015379641011805,"long":-109.05244682441632},{"lat":37.004114233165524,"long":-102.04615148062369}]'
 ```

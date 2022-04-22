@@ -64,7 +64,7 @@ func StartWebServer(config *config.Config) error {
 	router.PUT("/user", func(c *gin.Context) { CreateUser(config, c) })
 
 	if config.HTTPAddr == runLocal {
-		log.Fatal(router.Run(":8000"))
+		log.Fatal(router.RunTLS(":8000", "./keys/cert.pem", "./keys/key.pem"))
 	} else {
 		log.Fatal(autotls.Run(router, config.HTTPAddr))
 	}
