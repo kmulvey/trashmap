@@ -5,7 +5,6 @@ go 1.18
 require (
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-contrib/gzip v0.0.5
-	github.com/gin-contrib/httpsign v0.0.1
 	github.com/gin-contrib/secure v0.0.1
 	github.com/gin-contrib/sessions v0.0.5
 	github.com/gin-gonic/autotls v0.0.3
