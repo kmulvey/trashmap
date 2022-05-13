@@ -1,13 +1,13 @@
 import React from "react";
 import ReactDom from "react-dom";
-import { DialogAuth, BoxAuth, FullWidthAuth } from "../src";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Box from "@material-ui/core/Box";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import HomeIcon from "@material-ui/icons/HomeOutlined";
+import { DialogAuth, BoxAuth, FullWidthAuth } from "react-mui-auth-page";
+import CssBaseline from "@mui/material/CssBaseline";
+import Box from "@mui/material/Box";
+import { createMuiTheme, ThemeProvider } from "@mui/material/styles";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import HomeIcon from '@mui/icons-material/HomeOutlined';
 
 const theme = createMuiTheme({
   palette: {
